@@ -8,7 +8,10 @@ import OverviewScreen from './Screens/OverviewScreen';
 
 import firebase from 'firebase';
 import { firebaseConfig } from './config';
-firebase.initializeApp(firebaseConfig);
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 export default class App extends React.Component {
   render() {
