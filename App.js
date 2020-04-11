@@ -4,6 +4,7 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 
 import SplashScreen from './Screens/SplashScreen';
 import LoginScreen from './Screens/LoginScreen';
@@ -47,45 +48,101 @@ export default class App extends React.Component {
   }
   render() {
     const {isLoggedIn} = this.state;
+
     return (
-      <NavigationContainer>
-        {isLoggedIn ? (<StackNav />) : <LoginScreen />}
-      </NavigationContainer>
+      <>
+        {isLoggedIn ? <MainStackNavigator /> : <LoginScreen />}
+      </>
     );
   }
 }
 
-const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator()
+const Tab = createBottomTabNavigator()
 
-//TODO: Add icons
-const TabNav = () => {
-  return(
-      <Tab.Navigator>
-        <Tab.Screen name="Overview" component={OverviewScreen} />
-        <Tab.Screen name="Add Transaction" component={AddTransactionScreen} />
-        <Tab.Screen name="Transactions" component={TransactionsScreen} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
-      </Tab.Navigator>
+function getHeaderTitle(route) {
+  const routeName = route.state
+    ? route.state.routes[route.state.index].name
+    : route.params?.screen || 'Overview'
+
+  switch (routeName) {
+    case 'Overview':
+      return 'Overview'
+    case 'Add Transaction':
+      return 'Add Transaction'
+    case 'Transactions':
+      return 'Transactions'
+    case 'Settings':
+      return 'Settings'
+  }
+}
+
+function MainTabNavigator() {
+  return (
+    <Tab.Navigator
+      tabBarOptions={{
+        activeTintColor: '#D6ACEB',
+        inactiveTintColor: '#FFA5D6',
+        style: {
+          backgroundColor: '#DBFFFF',
+          paddingTop: 10
+        }
+      }}
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
+          let iconName
+          switch(route.name) {
+            case 'Overview':
+              iconName = 'chart-pie';
+              break;
+            case 'Add Transaction':
+              iconName = "plus-circle";
+              break;
+            case 'Transactions':
+              iconName = 'receipt'
+              break;
+            case 'Settings':
+              iconName = 'cog';
+              break;
+            default:
+          }
+
+          return <FontAwesome5 name={iconName} size={size} color={color} />;
+        }
+      })}>
+      <Tab.Screen name="Overview" component={OverviewScreen} />
+      <Tab.Screen name="Add Transaction" component={AddTransactionScreen} />
+      <Tab.Screen name="Transactions" component={TransactionsScreen} />
+      <Tab.Screen name="Settings" component={SettingsScreen} />
+    </Tab.Navigator>
   )
 }
 
-const Stack = createStackNavigator();
-
-//TODO: make header match tab name
-const StackNav = () => {
-  return(
-      <Stack.Navigator>
-        <Stack.Screen name="Overview" component={TabNav} />
+function MainStackNavigator() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName='Overview'
+        screenOptions={{
+          gestureEnabled: true,
+          headerStyle: {
+            backgroundColor: '#DBFFFF'
+          },
+          headerTitleStyle: {
+            fontWeight: 'bold'
+          },
+          headerTintColor: '#81B2AE',
+          headerBackTitleVisible: false
+        }}
+        headerMode='float'>
+        <Stack.Screen
+          name='Overview'
+          component={MainTabNavigator}
+          options={({ route }) => ({
+            headerTitle: getHeaderTitle(route)
+          })}
+        />
       </Stack.Navigator>
+    </NavigationContainer>
   )
 }
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

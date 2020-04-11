@@ -14,7 +14,7 @@ export default class AddTransactionScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FCFAF0',
     alignItems: 'center',
     justifyContent: 'center',
   },
