@@ -3,11 +3,12 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import * as Google from 'expo-google-app-auth';
 import firebase from 'firebase';
 
-export default class LoginScreen extends React.Component {
+export default function LoginScreen() {
 
-    isUserEqual = (googleUser, firebaseUser) => {
+    const isUserEqual = (googleUser, firebaseUser) => {
         if (firebaseUser) {
           var providerData = firebaseUser.providerData;
+          // TODO: rewrite this
           for (var i = 0; i < providerData.length; i++) {
             if (providerData[i].providerId === firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
                 providerData[i].uid === googleUser.getBasicProfile().getId()) {
@@ -19,13 +20,13 @@ export default class LoginScreen extends React.Component {
         return false;
       }
 
-      onSignIn = googleUser => {
+      const onSignIn = googleUser => {
         console.log('Google Auth Response', googleUser);
         // We need to register an Observer on Firebase Auth to make sure auth is initialized.
         var unsubscribe = firebase.auth().onAuthStateChanged(function(firebaseUser) {
             unsubscribe();
             // Check if we are already signed-in Firebase with the correct user.
-            if (!this.isUserEqual(googleUser, firebaseUser)) {
+            if (!isUserEqual(googleUser, firebaseUser)) {
                 console.log('new user');
             // Build Firebase credential with the Google ID token.
             var credential = firebase.auth.GoogleAuthProvider.credential(
@@ -71,9 +72,9 @@ export default class LoginScreen extends React.Component {
             } else {
             console.log('User already signed-in Firebase.');
             }
-        }.bind(this));
+        });
     };
-    signInWithGoogleAsync = async() => {
+    const signInWithGoogleAsync = async() => {
         try {
           const result = await Google.logInAsync({
             androidClientId: "330347084828-omlb7ofqspios3r9gnpqeciej88grlbn.apps.googleusercontent.com",
@@ -81,7 +82,7 @@ export default class LoginScreen extends React.Component {
           });
       
           if (result.type === 'success') {
-            this.onSignIn(result);
+            onSignIn(result);
             return result.accessToken;
           } else {
             return { cancelled: true };
@@ -90,17 +91,15 @@ export default class LoginScreen extends React.Component {
           return { error: true };
         }
       }
-
-    render() {
-        return (
+        
+      return (
         <View style={styles.container}>
             <Button
                 title="Sign In with Google"
-                onPress={() => this.signInWithGoogleAsync()}
+                onPress={() => signInWithGoogleAsync()}
             />
         </View>
-        );
-    }
+      );
 }
 
 const styles = StyleSheet.create({
