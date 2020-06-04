@@ -1,12 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 
-import SplashScreen from './Screens/SplashScreen';
 import LoginScreen from './Screens/LoginScreen';
 import OverviewScreen from './Screens/OverviewScreen';
 import AddTransactionScreen from './Screens/AddTransactionScreen';
@@ -51,7 +48,7 @@ export default class App extends React.Component {
 
     return (
       <>
-        {isLoggedIn ? <MainStackNavigator /> : <LoginScreen />}
+        {isLoggedIn ? <MainStackNavigator/> : <LoginScreen />}
       </>
     );
   }
