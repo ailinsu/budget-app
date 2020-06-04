@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 
+import SplashScreen from './Screens/SplashScreen';
 import LoginScreen from './Screens/LoginScreen';
 import OverviewScreen from './Screens/OverviewScreen';
 import AddTransactionScreen from './Screens/AddTransactionScreen';
@@ -17,27 +20,41 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
-export default function App() {
+export default class App extends React.Component {
+  constructor(props) {
+    super(props);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+    this.state = {
+      isLoggedIn: false
+    }
+  }
 
-  const checkIfLoggedIn = () => {
+  componentDidMount() {
+    this.checkIfLoggedIn();
+  }
+
+  checkIfLoggedIn = () => {
     firebase.auth().onAuthStateChanged( user => {
         if (user) {
-          setIsLoggedIn(true);
+          this.setState({
+            isLoggedIn: true
+          });
         } else {
-          setIsLoggedIn(false);
+          this.setState({
+            isLoggedIn: false
+          });
         }
     })
   }
+  render() {
+    const {isLoggedIn} = this.state;
 
-  useEffect(() => checkIfLoggedIn, []);
-
-  return (
-    <>
-      {isLoggedIn ? <MainStackNavigator /> : <LoginScreen />}
-    </>
-  );
+    return (
+      <>
+        {isLoggedIn ? <MainStackNavigator /> : <LoginScreen />}
+      </>
+    );
+  }
 }
 
 const Stack = createStackNavigator()

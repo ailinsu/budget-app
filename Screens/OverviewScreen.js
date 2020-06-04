@@ -1,12 +1,14 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 
-export default function OverviewScreen() {
-  return (
-    <View style={styles.container}>
-      <Text>OverviewScreen</Text>
-    </View>
-  );
+export default class OverviewScreen extends React.Component {
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text>OverviewScreen</Text>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
